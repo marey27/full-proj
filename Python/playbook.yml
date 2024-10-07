@@ -1,0 +1,25 @@
+---
+- name: "Automate docker file to run using ansible playbook"
+  hosts: localhost
+  tasks:
+
+    - name: stop running container 
+      command: docker stop python-app
+      ignore_errors: yes
+
+    - name: remove stopped container 
+      command: docker rm python-app
+      ignore_errors: yes
+
+    - name: remove old image 
+      command: docker rmi abdullahmarey/full-proj
+      ignore_errors: yes
+
+    - name: build new image 
+      command: docker build -t abdullahmarey/full-proj . 
+
+    - name: push new image to dockerhub 
+      command: docker push abdullahmarey/full-proj
+
+    - name: running new container 
+      command: docker run -d --name python-app -p 8000:8000 abdullahmarey/full-proj
