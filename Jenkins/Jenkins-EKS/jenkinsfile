@@ -1,4 +1,4 @@
-pipline {
+pipeline {
     agent any 
 
     stages {
@@ -9,7 +9,7 @@ pipline {
                 withCredentials([[ 
                     $class: 'amazonWebServiceCredentialsBinding' , 
                     credentialsId: "aws-credentials",
-                    accsessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable:  'AWS_SECRET_ACCESS_KEY'
 
             ]]) {
@@ -23,7 +23,7 @@ pipline {
                  withCredentials([[ 
                     $class: 'amazonWebServiceCredentialsBinding' , 
                     credentialsId: "aws-credentials",
-                    accsessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable:  'AWS_SECRET_ACCESS_KEY'
 
             ]]) {
@@ -38,11 +38,11 @@ pipline {
 
             steps {
 
-                withCredential([[
+                withCredentialis([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialId: "aws-credential",
+                    credentialsId: "aws-credential",
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable:  'AWS_ACCESSKEY_ID',
+                    secretKeyVariable:  'AWS_SECRET_ACCESS_KEY',
 
                 ]]) {
                     sh "kubectl create namespace pyton-app"
