@@ -1,0 +1,60 @@
+pipline {
+    agent any 
+
+    parameters {
+        string(name: 'DEPLOYMENT')
+    }
+
+    stages {
+        
+        stage ('Update kubeconfig') {
+
+            withCredential([[
+                $class: 'AmazonWebServicesCredintialBinding',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACSESS_KEY'
+            ]]) {
+                sh """
+                aws eks update-kubeconfig --name python-cluster
+                """
+            }
+        }
+
+        stage ('Deploy App') {
+            withCredential([[
+                $class: 'AmazonWebServicesCredintialBinding',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACSESS_KEY'
+            ]]) {
+                sh """
+                cd full-proj/k8s
+                kubectl -n python-app apply -f deployment.yml
+                kubectl -n python-app apply -f service.yml 
+
+                """
+                sleep(time: 120, unit: "SECONDS")
+            
+            }
+
+
+        }
+
+        stage ('Reval APP URL') {
+            steps {
+                 withCredential([[
+                $class: 'AmazonWebServicesCredintialBinding',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACSESS_KEY'
+            ]]) {
+                sh "aws elb describe-load-balancers | grep DNSName"
+                 
+
+                
+            
+            
+            }
+
+            }
+        }
+    }
+}
