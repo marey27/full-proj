@@ -1,6 +1,6 @@
-resource "aws_instance" "ubuntu" {
+resource "aws_instance" "fullpro" {
     ami             = var.ami
-    instance_type   = "te.medium"
+    instance_type   = "t2.medium"
     key_name        = "mykey"
     security_groups = ["${aws_security_group.ubuntusg.name}"]
     tags = {

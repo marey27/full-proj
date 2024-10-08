@@ -1,5 +1,5 @@
 version: "3.8"
-servicers:
+services:
   app: 
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
@@ -7,7 +7,7 @@ servicers:
       - "5000:8000"
     volumes:
       - .:/home/app
-      - sqlite_data:/home/app/db 
+      
     environment:
       - DATABASE_URL=sqlite:////usr/src/app/db/data.sqlite3
 
