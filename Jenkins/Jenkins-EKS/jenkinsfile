@@ -1,0 +1,70 @@
+pipline {
+    agent any 
+
+    stages {
+
+        stage ('create cluster') {
+
+            steps {
+                withCredentials([[ 
+                    $class: 'amazonWebServiceCredentialsBinding' , 
+                    credentialsId: "aws-credentials",
+                    accsessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable:  'AWS_SECRET_ACCESS_KEY'
+
+            ]]) {
+                sh "eksctl create cluster --name python-cluster --region eu-central-1 --nodes-min=3"
+            }
+            }
+        }
+
+        stage ('update kupeconfig') {
+            steps {
+                 withCredentials([[ 
+                    $class: 'amazonWebServiceCredentialsBinding' , 
+                    credentialsId: "aws-credentials",
+                    accsessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable:  'AWS_SECRET_ACCESS_KEY'
+
+            ]]) {
+                sh """
+                aws eks update-kubeconfig --name python-cluster
+                """
+            }
+            }
+         }
+
+        stage ('create name space ') {
+
+            steps {
+
+                withCredential([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialId: "aws-credential",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable:  'AWS_ACCESSKEY_ID',
+
+                ]]) {
+                    sh "kubectl create namespace pyton-app"
+                }
+            }
+        
+        }
+
+        stage ('Deploy APP') {
+            steps {
+                script{
+                    build job: 'Deploy_App',
+                    parameters: [
+                        [$class: 'StringParameterValue', name: 'DEPLOYMENT']
+                    ]
+                }
+            }
+        }
+        
+
+
+        
+    }
+
+}
