@@ -15,7 +15,7 @@ pipline {
             ]]) {
                 sh "eksctl create cluster --name python-cluster --region eu-central-1 --nodes-min=3"
             }
-            }
+          }
         }
 
         stage ('update kupeconfig') {
@@ -31,8 +31,8 @@ pipline {
                 aws eks update-kubeconfig --name python-cluster
                 """
             }
-            }
-         }
+          }
+        }
 
         stage ('create name space ') {
 
